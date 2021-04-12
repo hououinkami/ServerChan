@@ -120,6 +120,7 @@ jobs:
       run: |
         cd openwrt/bin/packages/
         tar -cvf KamiWrt_packages_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}.tar ./
+        gzip KamiWrt_packages_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}.tar
         mv *.tar.gz ..
         echo "::set-output name=status::success"
     
