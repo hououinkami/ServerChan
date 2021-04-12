@@ -33,19 +33,6 @@ jobs:
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
         echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
-    
-    - name: Merge fork
-      id: mergeFork
-      if: steps.cacheHash.outputs.cache-hit != 'true'
-      uses: TobKed/github-forks-sync-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        upstream_repository: tty228/luci-app-serverchan
-        target_repository: hououinkami/luci-app-serverchan
-        upstream_branch: master
-        target_branch: master
-        force: true
-        tags: true
 
     - name: Trigger build
       if: steps.cacheHash.outputs.cache-hit != 'true'
