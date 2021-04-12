@@ -10,7 +10,7 @@ function get_config(){
 
 # 初始化设置信息
 function read_config(){
-	get_config "serverchan_enable" "sckey" "serverchan_ipv4" "ipv4_interface" "ipv4_URL" "serverchan_ipv6" "ipv6_interface" "ipv6_URL" "serverchan_up" "serverchan_down" "serverchan_sheep" "serverchan_whitelist" "serverchan_blacklist" "serverchan_interface" "starttime" "endtime" "cpuload_enable" "cpuload" "temperature_enable" "temperature" "device_name" "err_enable" "network_err_event" "err_sheep_enable" "system_time_event" "autoreboot_time" "network_restart_time" "public_ip_event" "public_ip_retry_count" "soc_code" "sleeptime" "up_timeout" "down_timeout" "device_aliases" "debuglevel" "cpuload" "temperature" "send_mode" "regular_time" "regular_time_2" "regular_time_3" "interval_time" "thread_num" "timeout_retry_count" "send_tg" "tgtoken" "err_device_aliases" "sctkey" "oui_dir" "oui_data" "client_usage" "client_usage_max" "client_usage_disturb" "client_usage_whitelist"
+        get_config "serverchan_enable" "sckey" "tg_token" "chat_id" "serverchan_ipv4" "ipv4_interface" "ipv4_URL" "serverchan_ipv6" "ipv6_interface" "ipv6_URL" "serverchan_up" "serverchan_down" "serverchan_sheep" "serverchan_whitelist" "serverchan_blacklist" "serverchan_interface" "starttime" "endtime" "cpuload_enable" "cpuload" "temperature_enable" "temperature" "device_name" "err_enable" "network_err_event" "err_sheep_enable" "system_time_event" "autoreboot_time" "network_restart_time" "public_ip_event" "public_ip_retry_count" "soc_code" "sleeptime" "up_timeout" "down_timeout" "device_aliases" "debuglevel" "cpuload" "temperature" "send_mode" "regular_time" "regular_time_2" "regular_time_3" "interval_time" "thread_num" "timeout_retry_count" "err_device_aliases" "oui_dir" "oui_data" "client_usage" "client_usage_max" "client_usage_disturb" "client_usage_whitelist" "reset_regularly"
 	for str_version in "wrtbwmon" "iputils-arping" "curl" "iw"; do
 		eval `echo ${str_version:0:2}"_version"`=`opkg list-installed|grep -w ^${str_version}|awk '{print $3}'` 2>/dev/null
 	done
@@ -25,7 +25,8 @@ function read_config(){
 	[ -z "$down_timeout" ] || [ "$down_timeout" -eq "0" ] && down_timeout="20";down_timeout=`expr ${down_timeout} / 2 + 1`
 	[ -z "$timeout_retry_count" ] && timeout_retry_count="2";[ "$timeout_retry_count" -eq "0" ] && timeout_retry_count="1"
 	markdown_splitline="%0D%0A%0D%0A---%0D%0A%0D%0A";markdown_linefeed="%0D%0A%0D%0A";markdown_tab="     ";markdown_space=" "
-	[ ! -z "$send_tg" ] && [ "$send_tg" -eq "1" ] && markdown_splitline="%0D%0A%0D%0A%0D%0A%0D%0A" && markdown_tab=""
+	[ ! -z "$sckey" ] && [ ${sckey:0:3} == "SCU" ] && sckey_url="http://sc.ftqq.com/${sckey}.send"
+ 	[ ! -z "$sckey" ] && [ ${sckey:0:3} == "SCT" ] && sckey_url="http://sctapi.ftqq.com/${sckey}.send"
 }
 
 # 初始化
@@ -40,10 +41,9 @@ function serverchan_init(){
 	deltemp
 	rm -f ${dir}fd1 ${dir}sheep_usage ${dir}old_sheep_usage ${dir}client_usage_aliases ${dir}old_client_usage_aliases /usr/bin/serverchan/errlog >/dev/null 2>&1
 	[ ! -f "/usr/sbin/wrtbwmon" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】未安装 wrtbwmon ，流量统计不可用" >> ${logfile}
-	for read_str in "ip_version" "cu_version"; do
-		[ -z `eval echo '$'$read_str` ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】依赖项 iputils-arping、curl 未安装，请确认插件是否正常运行" >> ${logfile}
-	done
-	[ -z "$sckey" ] && [ -z "$sctkey" ] && [ -z "$tgtoken" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】请填写正确的 sckey " >> ${logfile} && return 1
+	[ -z "$ip_version" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】无法获取依赖项 iputils-arping 版本号，请确认插件是否正常运行" >> ${logfile}
+ 	[ -z "$cu_version" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】无法获取依赖项 curl 版本号，请确认插件是否正常运行" >> ${logfile}
+ 	[ -z "$sckey" ] && [ -z "$tg_token" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】请填写正确的 sckey " >> ${logfile} && return 1
 	local interfacelist=`getinterfacelist` && [ -z "$interfacelist" ] && echo "`date "+%Y-%m-%d %H:%M:%S"` 【！！！】无法正确获取接口信息，请确认插件是否正常运行" >> ${logfile}
 	return 0
 }
@@ -121,21 +121,21 @@ function getinterfaceuptime(){
 # 查询 mac 地址
 function getmac(){
 	( echo "$tmp_mac"|grep -q "unknown" ) && unset tmp_mac # 为unknown时重新读取
-	[ -f "${dir}ipAddress" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat ${dir}ipAddress|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u`
-	[ -f "${dir}tmp_downlist" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat ${dir}tmp_downlist|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u`
-	[ -f "/var/dhcp.leases" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat /var/dhcp.leases|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u`
-	[ -z "$tmp_mac" ] && local tmp_mac=`cat /proc/net/arp|grep "0x2\|0x6"|grep -w ${1}|awk '{print $4}'|grep -v "^$"|sort -u`
+	[ -f "${dir}ipAddress" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat ${dir}ipAddress|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u|head -n1`
+ 	[ -f "${dir}tmp_downlist" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat ${dir}tmp_downlist|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u|head -n1`
+ 	[ -f "/var/dhcp.leases" ] && [ -z "$tmp_mac" ] && local tmp_mac=`cat /var/dhcp.leases|grep -w ${1}|awk '{print $2}'|grep -v "^$"|sort -u|head -n1`
+ 	[ -z "$tmp_mac" ] && local tmp_mac=`cat /proc/net/arp|grep "0x2\|0x6"|grep -w ${1}|awk '{print $4}'|grep -v "^$"|sort -u|head -n1`
 	[ -z "$tmp_mac" ] && local tmp_mac="unknown"
 	echo "$tmp_mac"
 }
 
 # 查询主机名
 function getname(){
-	[ -z "$tmp_name" ] && local tmp_name=`echo "$device_aliases"|grep -i $2|awk '{print $2}'|grep -v "^$"|sort -u`
-	[ -f "${dir}ipAddress" ] && [ -z "$tmp_name" ] && local tmp_name=`cat ${dir}ipAddress|grep -w ${1}|awk '{print $3}'|grep -v "^$"|sort -u`
-	[ -f "${dir}tmp_downlist" ] && [ -z "$tmp_name" ] && local tmp_name=`cat ${dir}tmp_downlist|grep -w ${1}|awk '{print $3}'|grep -v "^$"|sort -u`
+	[ -z "$tmp_name" ] && local tmp_name=`echo "$device_aliases"|grep -i $2|awk '{print $2}'|grep -v "^$"|sort -u|head -n1`
+ 	[ -f "${dir}ipAddress" ] && [ -z "$tmp_name" ] && local tmp_name=`cat ${dir}ipAddress|grep -w ${1}|awk '{print $3}'|grep -v "^$"|sort -u|head -n1`
+ 	[ -f "${dir}tmp_downlist" ] && [ -z "$tmp_name" ] && local tmp_name=`cat ${dir}tmp_downlist|grep -w ${1}|awk '{print $3}'|grep -v "^$"|sort -u|head -n1`
 	( ! echo "$tmp_name"|grep -q -w "unknown\|*" ) && [ ! -z "$tmp_name" ] && echo "$tmp_name" && return || unset tmp_name # 为unknown时重新读取
-	[ -f "/var/dhcp.leases" ] && [ -z "$tmp_name" ] && local tmp_name=`cat /var/dhcp.leases|grep -w ${1}|awk '{print $4}'|grep -v "^$"|sort -u`
+	[ -f "/var/dhcp.leases" ] && [ -z "$tmp_name" ] && local tmp_name=`cat /var/dhcp.leases|grep -w ${1}|awk '{print $4}'|grep -v "^$"|sort -u|head -n1`
 	( ! echo "$tmp_name"|grep -q -w "unknown\|*" ) && [ ! -z "$tmp_name" ] && echo "$tmp_name" && return || unset tmp_name # 为unknown时重新读取
 	[ -z "$dhcp_config" ] && dhcp_config=`uci show dhcp|grep "ip\|mac\|name"`
 	for dhcp_config_str in "host" "domain"; do
