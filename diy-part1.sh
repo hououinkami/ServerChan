@@ -19,7 +19,7 @@ sed -i 's/路由器重新启动/ルーター再起動完了/g' serverchan
 sed -i 's/\$ip_name 连接了你的路由器/✅ \$ip_name がルーターに接続/g' serverchan
 sed -i 's/新设备连接/デバイス接続/g' serverchan
 sed -i 's/客户端名/設備/g' serverchan
-sed -i 's/客户端IP/IP：     /g' serverchan
+sed -i 's/客户端IP： /IP：     /g' serverchan
 sed -i 's/客户端MAC/MAC/g' serverchan
 sed -i 's/网络接口/インターフェース/g' serverchan
 sed -i 's/连接了你的路由器/がルーターに接続/g' serverchan
