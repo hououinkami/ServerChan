@@ -12,25 +12,28 @@ cd luci-app-serverchan/root/usr/bin/serverchan
 sed -i 's/"IP 地址变化"/"🔗 IPアドレスがISPにより変更"/g' serverchan
 sed -i 's/IP 地址变化/IPアドレス変更/g' serverchan
 sed -i 's/当前 IP/現在のIP/g' serverchan
-
+sed -i 's/当前IP/現在のIP/g' serverchan
 sed -i 's/"路由器重新启动"/"🔄 ルーターが再起動しました"/g' serverchan
 sed -i 's/路由器重新启动/ルーター再起動完了/g' serverchan
 
-sed -i 's/\$ip_name 连接了你的路由器/✅\$ip_name がルーターに接続/g' serverchan
+sed -i 's/\$ip_name 连接了你的路由器/✅ \$ip_name がルーターに接続/g' serverchan
 sed -i 's/新设备连接/デバイス接続/g' serverchan
 sed -i 's/客户端名/設備/g' serverchan
 sed -i 's/客户端IP/IP：     /g' serverchan
 sed -i 's/客户端MAC/MAC/g' serverchan
 sed -i 's/网络接口/インターフェース/g' serverchan
 sed -i 's/连接了你的路由器/がルーターに接続/g' serverchan
-sed -i 's/设备状态变化/✅デバイスステータスの変更/g' serverchan
+sed -i 's/设备状态变化/📳 デバイスステータスの変更/g' serverchan
 
 sed -i 's/总计流量/トラフィック/g' serverchan
 
-sed -i 's/\${ip_name} 断开连接/❌\${ip_name} がルーターから切断/g' serverchan
+sed -i 's/\${ip_name} 断开连接/❌ \${ip_name} がルーターから切断/g' serverchan
 sed -i 's/设备断开连接/デバイス切断/g' serverchan
 sed -i 's/在线时间/オンライン時間/g' serverchan
 sed -i 's/断开连接/がルーターから切断/g' serverchan
+
+sed -i 's/台，詳細は以下の通り/つ、/g' serverchan
+sed -i 's/IP 地址/IP：     /g' serverchan
 
 sed -i 's/CPU 温度过高！/🌡 CPU温度異常！/g' serverchan
 sed -i 's/CPU 温度过高/CPU温度上昇/g' serverchan
@@ -64,6 +67,8 @@ sed -i 's/在线/オンライン/g' serverchan
 
 sed -i 's/小时/時/g' serverchan
 sed -i 's/天/日/g' serverchan
+
+sed -i 's/ \&\& current_device//g' serverchan
 
 cd -
 
