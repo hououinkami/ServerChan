@@ -179,6 +179,7 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        format: html
         message: |
           <b>✅ ServerChanコンパイル完了！</b>
           時間：${{env.TIME_HOUR}}時${{env.TIME_MIN}}分
@@ -189,6 +190,7 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        format: html
         message: |
           <b>❌ ServerChanコンパイルに失敗！</b>
           リンク：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
