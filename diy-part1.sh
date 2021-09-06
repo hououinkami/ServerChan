@@ -18,7 +18,7 @@ sed -i 's/路由器重新启动/ルーター再起動完了/g' serverchan
 
 sed -i 's/\$ip_name 连接了你的路由器/✅ \$ip_name がルーターに接続/g' serverchan
 sed -i 's/新设备连接/デバイス接続/g' serverchan
-sed -i '690,720 s/\${ip_name} \${title}/✅ \${ip_name} \${title}/' serverchan
+sed -i '700,800 s/\${ip_name} \${title}/✅ \${ip_name} \${title}/' serverchan
 sed -i 's/客户端名/設備/g' serverchan
 sed -i 's/客户端IP： /IP：     /g' serverchan
 sed -i 's/客户端MAC/MAC/g' serverchan
@@ -30,7 +30,7 @@ sed -i 's/总计流量：/トラフィック：    /g' serverchan
 
 sed -i 's/\${ip_name} 断开连接/❌ \${ip_name} がルーターから切断/g' serverchan
 sed -i 's/设备断开连接/デバイス切断/g' serverchan
-sed -i '740,770 s/\${ip_name} \${title}/❌ \${ip_name} \${title}/' serverchan
+sed -i '800,900 s/\${ip_name} \${title}/❌ \${ip_name} \${title}/' serverchan
 sed -i 's/在线时间/オンライン時間/g' serverchan
 sed -i 's/断开连接/がルーターから切断/g' serverchan
 
