@@ -6,6 +6,7 @@ cd package
 git clone https://github.com/tty228/luci-app-serverchan.git
 
 sed -i 's/微信推送/设备状态推送/g' luci-app-serverchan/luasrc/controller/serverchan.lua
+cat luci-app-serverchan/luasrc/controller/serverchan.lua
 
 cd luci-app-serverchan/root/usr/bin/serverchan
 
