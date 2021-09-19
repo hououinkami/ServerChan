@@ -77,6 +77,17 @@ sed -i 's/天/日/g' serverchan
 
 sed -i 's/ \&\& current_device//g' serverchan
 
+sed -i 's/\${login_ip} 通过 web 登陆了路由器/🔑 \${login_ip} Web経由で/g' serverchan
+sed -i 's/\${login_ip} 通过 ssh 登陆了路由器/🔑 \${login_ip} SSH経由でルーターにログイン/g' serverchan
+sed -i 's/\${login_ip} 通过 web 频繁尝试登陆/🔑 \${login_ip} Web経由で頻繁にログイン試行/g' serverchan
+sed -i 's/\${login_ip} 通过 ssh 频繁尝试登陆/🔑 \${login_ip} SSH経由で頻繁にログイン試行/g' serverchan
+sed -i 's/登陆了路由器/ルーターにログイン/g' serverchan
+sed -i 's/频繁尝试登陆/頻繁にログイン試行/g' serverchan
+sed -i 's/登陆信息/ログイン情報/g' serverchan
+sed -i 's/\${str_tab}时间/\${str_tab}時間/g' serverchan
+sed -i 's/设备 IP： /IP：     /g' serverchan
+sed -i 's/登录方式/方法/g' serverchan
+
 cd -
 
 #
