@@ -194,3 +194,4 @@ jobs:
         message: |
           <b>❌ ServerChanコンパイルに失敗！</b>
           リンク：$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
