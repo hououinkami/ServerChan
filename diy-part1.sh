@@ -16,6 +16,8 @@ cd luci-app-serverchan/root/usr/bin/serverchan
 
 sed -i 's/"IP 地址变化"/"🔗 IPアドレスがISPにより変更"/g' serverchan
 sed -i 's/IP 地址变化/IPアドレス変更/g' serverchan
+sed -i 's/"IPv6 地址变化"/"🔗 IPv6アドレスがISPにより変更"/g' serverchan
+sed -i 's/IPv6 地址变化/IPv6アドレス変更/g' serverchan
 sed -i 's/当前 IP/現在のIP/g' serverchan
 sed -i 's/当前IP/現在のIP/g' serverchan
 sed -i 's/"路由器重新启动"/"🔄 ルーターが再起動しました"/g' serverchan
@@ -66,8 +68,10 @@ sed -i 's/内存占用/メモリ使用/g' serverchan
 sed -i 's/全球互联/グローバル接続/g' serverchan
 sed -i 's/设备温度/設備温度/g' serverchan
 sed -i 's/WAN 口信息/WAN情報/g' serverchan
-sed -i 's/接口 IPv4/インターフェースIP/g' serverchan
-sed -i 's/外网 IPv4/外部ネットワークIP/g' serverchan
+sed -i 's/接口 IPv4/LAN IP/g' serverchan
+sed -i 's/外网 IPv4/WAN IP/g' serverchan
+sed -i 's/接口 IPv6/LAN IPv6/g' serverchan
+sed -i 's/外网 IPv6/WAN IPv6/g' serverchan
 sed -i 's/外网 IP 与接口 IP 不一致，你的 IP 可能不是公网 IP/IPはパブリックネットワークIPではありません。/g' serverchan
 sed -i 's/当前无在线设备/接続しているデバイスなし/g' serverchan
 sed -i 's/在线设备/接続しているデバイス/g' serverchan
